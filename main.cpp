@@ -10,20 +10,17 @@
 #include <stdio.h>
 #include <streambuf>
 #include <sstream>
-#include <Windows.h>
 
+#include <sciplot/sciplot.hpp>
 #include <cpr/cpr.h>
 #include "json.hpp"
-#include <sciplot/sciplot.hpp>
+#include "pocketlzma.hpp"
 
 using json = nlohmann::json;
 
 
 
 //--------------------------------------------------------------------------------------------------------------------
-
-
-
 
 
 
@@ -43,20 +40,24 @@ int main()
 
 	std::string url_index = "https://origin.warframe.com/PublicExport/index_en.txt.lzma";
 
-    cpr::Response r = cpr::Get(cpr::Url{ url_index },
-        cpr::Authentication{ "user", "pass", cpr::AuthMode::BASIC },
-        cpr::Parameters{ {"anon", "true"}, {"key", "value"} });
+    cpr::Response r = cpr::Get(cpr::Url{ url_index });
     std::cout << "Status code: " << r.status_code << '\n';
-    std::cout << "Header:\n";
-    for (const std::pair<const std::basic_string<char>, std::basic_string<char>>& kv : r.header) {
-        std::cout << '\t' << kv.first << ':' << kv.second << '\n';
+
+    std::ofstream indexLzma("json/indexLzma.txt.lzma", std::ios::out | std::ios::binary);
+    if (indexLzma.is_open())
+    {
+        for (std::size_t i = 0; i < r.text.size(); ++i)
+        {
+            indexLzma.write((&r.text.c_str()[i]), sizeof(r.text.c_str()[i]));
+        }
+        indexLzma.close();
     }
-    std::cout << "Text: " << r.text << '\n';
+    else std::cout << "Unable to open indexLzma";
+
+
+    
 
     //------------------------------------------------------------------------------------------------------
-
-
-
 
 
 
