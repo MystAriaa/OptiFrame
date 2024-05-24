@@ -56,10 +56,11 @@ int main()
     }
     else
     {
-        std::cout << "Unable to open indexLzma";
+        std::cout << "Unable to open indexLzma" << std::endl;
         return 1;
     }
     std::cout << "LZMA file saved succesfully." << std::endl;
+    std::cout << "---------------------------------------" << std::endl;
     
 
     //Decompress LZMA to txt
@@ -78,7 +79,7 @@ int main()
             plz::FileStatus writeStatus = plz::File::ToFile(outputPath, decompressedData);
             if (writeStatus.status() == plz::FileStatus::Code::Ok)
             {
-                std::cout << "Successfully decompressed.";
+                std::cout << "Successfully decompressed." << std::endl;
             }
             else
             {
@@ -97,8 +98,57 @@ int main()
         std::cout << "Error, failed to open LZMA file, exiting." << std::endl;
         return 1;
     }
+    std::cout << "---------------------------------------" << std::endl;
+
+    //Load Indexes Value
+    std::cout << "Loading indexes ..." << std::endl;
+    std::string Weapon_Index, Warframe_Index, Upgrade_Index;
+    std::string line;
+    std::ifstream indexLzmaDecompressed("json/indexLzmaDecompressed.txt", std::ios::in);
+    if (indexLzmaDecompressed.is_open())
+    {
+        while (std::getline(indexLzmaDecompressed, line))
+        {
+            std::istringstream iss(line);
+            std::string lineF;
+            if (!(iss >> lineF)) { break; } // error
+
+            if (lineF.find("ExportWeapons") != std::string::npos)
+            {
+                Weapon_Index = lineF;
+            }
+            if (lineF.find("ExportWarframes") != std::string::npos)
+            {
+                Warframe_Index = lineF;
+            }
+            if (lineF.find("ExportUpgrades") != std::string::npos)
+            {
+                Upgrade_Index = lineF;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Unable to open indexLzmaDecompressed" << std::endl;
+        return 1;
+    }
+
+    if (!Weapon_Index.empty() && !Warframe_Index.empty() && !Upgrade_Index.empty())
+    {
+        std::cout << "Weapon_Index: " << Weapon_Index << std::endl;
+        std::cout << "Warframe_Index: " << Warframe_Index << std::endl;
+        std::cout << "Upgrade_Index: " << Upgrade_Index << std::endl;
+    }
+    else
+    {
+        std::cout << "Failed to read Indexes from file, exiting." << std::endl;
+        return 1;
+    }
+    std::cout << "Indexes loaded successfully." << std::endl;
+    std::cout << "---------------------------------------" << std::endl;
 
 
+    //
 
 
 
