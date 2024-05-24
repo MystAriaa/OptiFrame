@@ -10,22 +10,83 @@
 #include <stdio.h>
 #include <streambuf>
 #include <sstream>
+#include <filesystem>
 
 #include <sciplot/sciplot.hpp>
 #include <cpr/cpr.h>
-#include "json.hpp"
+#include <json.hpp>
 #include "pocketlzma.hpp"
 
-using json = nlohmann::json;
+using Json = nlohmann::json;
 
 
 
 //--------------------------------------------------------------------------------------------------------------------
 
+class PistolWeaponAttribute {
+public:
+    std::string name;
+    std::string uniqueName;
+    bool codexSecret;
+    std::vector<float> damagePerShot;
+    int totalDamage;
+    std::string description;
+    float criticalChance;
+    float criticalMultiplier;
+    float procChance;
+    float fireRate;
+    int masteryReq;
+    std::string productCategory;
+    int slot;
+    float accuracy;
+    float omegaAttenuation;
+    std::string noise;
+    std::string trigger;
+    int magasineSize;
+    float reloadTime;
+    float multishot;
+};
 
+class MeleeWeaponAttribute {
+public:
+    std::string name;
+    std::string uniqueName;
+    bool codexSecret;
+    std::vector<float> damagePerShot;
+    int totalDamage;
+    std::string description;
+    float criticalChance;
+    float criticalMultiplier;
+    float procChance;
+    float fireRate;
+    int masteryReq;
+    std::string productCategory;
+    int slot;
+    float omegaAttenuation;
+    float blockingAngle;
+    float comboDuration;
+    float followThrough;
+    float range;
+    float slamAttack;
+    float slamRadialDamage;
+    float slamRadius;
+    float slideAttack;
+    float heavyAttackDamage;
+    float heavySlamAttack;
+    float heavySlamRadialDamage;
+    float heavySlamRadius;
+    float windUp;
+};
 
 //--------------------------------------------------------------------------------------------------------------------
 
+std::string clean_string(std::string str)
+{
+    std::string c_str = str;
+    c_str.erase(0, 1);
+    c_str.erase(c_str.size() - 1);
+    return c_str;
+}
 
 
 
@@ -41,16 +102,16 @@ int main()
     std::cout << "Start of GET request ..." << std::endl;
 	std::string url_index = "https://origin.warframe.com/PublicExport/index_en.txt.lzma";
 
-    cpr::Response r = cpr::Get(cpr::Url{ url_index });
-    std::cout << "Status code: " << r.status_code << '\n';
+    cpr::Response indexResponse = cpr::Get(cpr::Url{ url_index });
+    std::cout << "Status code: " << indexResponse.status_code << '\n';
     std::cout << "End of GET request." << std::endl;
     std::cout << "Saving LZMA file locally ..." << std::endl;
     std::ofstream indexLzma("json/indexLzma.txt.lzma", std::ios::out | std::ios::binary);
     if (indexLzma.is_open())
     {
-        for (std::size_t i = 0; i < r.text.size(); ++i)
+        for (std::size_t i = 0; i < indexResponse.text.size(); ++i)
         {
-            indexLzma.write((&r.text.c_str()[i]), sizeof(r.text.c_str()[i]));
+            indexLzma.write((&indexResponse.text.c_str()[i]), sizeof(indexResponse.text.c_str()[i]));
         }
         indexLzma.close();
     }
@@ -148,7 +209,74 @@ int main()
     std::cout << "---------------------------------------" << std::endl;
 
 
-    //
+    //Load JSONs
+    std::cout << "Start of GET requests (content.warframe.com/PublicExport/Manifest)" << std::endl;
+    std::string Base_URL = "https://content.warframe.com/PublicExport/Manifest/";
+    //Load Weapons Json
+    std::cout << "Weapon JSON: " << std::endl;
+    cpr::Response weaponResponse = cpr::Get(cpr::Url{ Base_URL+Weapon_Index });
+    std::cout << "Status code: " << weaponResponse.status_code << '\n';
+    std::ofstream weaponJSONstream("json/weaponJson.json", std::ios::out );
+    std::string cleanResponse = weaponResponse.text;
+    //Cleaning Json
+    while (cleanResponse.find("\r") != std::string::npos)
+    {
+        cleanResponse.replace(cleanResponse.find("\r"), 2, "");
+    }
+    //Save Json
+    if (weaponJSONstream.is_open())
+    {
+        weaponJSONstream << cleanResponse;
+        weaponJSONstream.close();
+    }
+    else
+    {
+        std::cout << "Unable to open weaponJSON" << std::endl;
+        return 1;
+    }
+
+    
+
+    Json weaponJson;
+    //Read Weapon Json
+    std::ifstream weaponJsonstream("json/weaponJson.json");
+    if (weaponJsonstream.is_open())
+    {
+        weaponJsonstream >> weaponJson;
+        weaponJsonstream.close();
+    }
+    
+
+    //Save Each weapon data in a Json file sorted in their respectiv folder;
+    for (int i = 0; i < weaponJson["ExportWeapons"].size(); i++)
+    {
+        std::string tempPathString = "json/weapons/";
+        tempPathString.append(weaponJson["ExportWeapons"][i]["productCategory"]);
+        std::filesystem::create_directories(tempPathString);
+
+        tempPathString.append("/");
+        tempPathString.append(weaponJson["ExportWeapons"][i]["name"]);
+        tempPathString.append(".json");
+
+        
+        std::ofstream tempFileStream(tempPathString);
+        std::cout << tempPathString << std::endl;
+        if (tempFileStream.is_open())
+        {
+            tempFileStream << weaponJson["ExportWeapons"][i];
+            tempFileStream.close();
+        }
+    }
+
+
+    //todo
+    //ne pas faire les spawn de directory + file si il existe deja
+    //delete les file ZLMA + masterWeaponJson quand try fini
+    //comment
+
+
+
+
 
 
 
