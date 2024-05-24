@@ -20,12 +20,18 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-add_executable(cpr_example main.cpp)
+add_executable(cpr_example main.cpp include/json.hpp)
 
 if(WIN32) # Install dlls in the same directory as the executable on Windows
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
+
+
+target_include_directories ("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/")
+target_include_directories ("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/")
+
+
 
 include(FetchContent)
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
@@ -33,3 +39,16 @@ FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
 FetchContent_MakeAvailable(cpr)
 
 target_link_libraries(cpr_example PRIVATE cpr::cpr)
+
+
+
+FetchContent_Declare(sciplot_content
+  GIT_REPOSITORY https://github.com/sciplot/sciplot.git
+  GIT_TAG master)
+
+FetchContent_GetProperties(sciplot_content)
+if(NOT sciplot_content_POPULATED)
+  FetchContent_Populate(sciplot_content)
+endif()
+
+include_directories(${sciplot_content_SOURCE_DIR})
