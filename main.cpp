@@ -17,6 +17,8 @@
 #include <json.hpp>
 #include "pocketlzma.hpp"
 
+#include "Mod.h"
+
 using Json = nlohmann::json;
 
 
@@ -78,6 +80,8 @@ public:
     float windUp;
 };
 
+
+
 //--------------------------------------------------------------------------------------------------------------------
 
 std::string clean_string_symbols(std::string str)
@@ -111,6 +115,10 @@ std::string clean_string_symbols(std::string str)
 
 int main()
 {
+    // Init
+    std::filesystem::create_directories("./data");
+    std::filesystem::create_directories("./data/json");
+    std::filesystem::create_directories("./data/lzma");
     //------------------------------------------------------------------------------------------------------
 	//API WARFRAME PUBLIC EXPORT
     // 
@@ -122,7 +130,7 @@ int main()
     std::cout << "Status code: " << indexResponse.status_code << '\n';
     std::cout << "End of GET request." << std::endl;
     std::cout << "Saving LZMA file locally ..." << std::endl;
-    std::ofstream indexLzma("json/indexLzma.txt.lzma", std::ios::out | std::ios::binary);
+    std::ofstream indexLzma("./data/lzma/indexLzma.txt.lzma", std::ios::out | std::ios::binary);
     if (indexLzma.is_open())
     {
         for (std::size_t i = 0; i < indexResponse.text.size(); ++i)
@@ -142,7 +150,7 @@ int main()
 
     //Decompress LZMA to txt
     std::cout << "Decompressing LZMA file ..." << std::endl;
-    std::string path = "json/indexLzma.txt.lzma";
+    std::string path = "./data/lzma/indexLzma.txt.lzma";
     std::vector<uint8_t> data;
     std::vector<uint8_t> decompressedData;
     plz::FileStatus fileStatus = plz::File::FromFile(path, data);
@@ -152,7 +160,7 @@ int main()
         plz::StatusCode status = p.decompress(data, decompressedData);
         if (status == plz::StatusCode::Ok)
         {
-            std::string outputPath = "json/indexLzmaDecompressed.txt";
+            std::string outputPath = "./data/lzma/indexLzmaDecompressed.txt";
             plz::FileStatus writeStatus = plz::File::ToFile(outputPath, decompressedData);
             if (writeStatus.status() == plz::FileStatus::Code::Ok)
             {
@@ -181,7 +189,7 @@ int main()
     std::cout << "Loading indexes ..." << std::endl;
     std::string Weapon_Index, Warframe_Index, Upgrade_Index;
     std::string line;
-    std::ifstream indexLzmaDecompressed("json/indexLzmaDecompressed.txt", std::ios::in);
+    std::ifstream indexLzmaDecompressed("./data/lzma/indexLzmaDecompressed.txt", std::ios::in);
     if (indexLzmaDecompressed.is_open())
     {
         while (std::getline(indexLzmaDecompressed, line))
@@ -266,7 +274,7 @@ int main()
     //Save Response to JSON files
     std::cout << "Save responses to JSON files" << std::endl;
     std::cout << "Saving weaponResponse ..." << std::endl;
-    std::ofstream weaponJSONstream("json/weaponJson.json", std::ios::out );
+    std::ofstream weaponJSONstream("./data/json/weaponJson.json", std::ios::out );
     if (weaponJSONstream.is_open())
     {
         weaponJSONstream << cleanWeaponResponse;
@@ -278,7 +286,7 @@ int main()
         return 1;
     }
     std::cout << "Saving warframeResponse ..." << std::endl;
-    std::ofstream warframeJSONstream("json/warframeJson.json", std::ios::out);
+    std::ofstream warframeJSONstream("./data/json/warframeJson.json", std::ios::out);
     if (warframeJSONstream.is_open())
     {
         warframeJSONstream << cleanWarframeResponse;
@@ -290,7 +298,7 @@ int main()
         return 1;
     }
     std::cout << "Saving upgradeResponse ..." << std::endl;
-    std::ofstream upgradeJSONstream("json/upgradeJson.json", std::ios::out);
+    std::ofstream upgradeJSONstream("./data/json/upgradeJson.json", std::ios::out);
     if (upgradeJSONstream.is_open())
     {
         upgradeJSONstream << cleanUpgradeResponse;
@@ -310,7 +318,7 @@ int main()
     //Read Weapon Json
     std::cout << "weaponJson ..." << std::endl;
     Json weaponJson;
-    std::ifstream weaponJsonstream("json/weaponJson.json");
+    std::ifstream weaponJsonstream("./data/json/weaponJson.json");
     if (weaponJsonstream.is_open())
     {
         weaponJsonstream >> weaponJson;
@@ -323,21 +331,22 @@ int main()
     //Save Each weapon data in a Json file sorted in their respectiv folder;
     for (int i = 0; i < weaponJson["ExportWeapons"].size(); i++)
     {
-        std::string tempPathString = "json/weapons/";
-        tempPathString.append(weaponJson["ExportWeapons"][i]["productCategory"]);
-        std::filesystem::create_directories(tempPathString);
-
-        tempPathString.append("/");
-        tempPathString.append(weaponJson["ExportWeapons"][i]["name"]);
-        tempPathString.append(".json");
-
-        
-        std::ofstream tempFileStream(tempPathString);
-        std::cout << tempPathString << std::endl;
-        if (tempFileStream.is_open())
+        if (!weaponJson["ExportWeapons"][i]["productCategory"].empty())
         {
-            tempFileStream << weaponJson["ExportWeapons"][i];
-            tempFileStream.close();
+            std::string tempPathString = "./data/json/weapons/";
+            tempPathString.append(weaponJson["ExportWeapons"][i]["productCategory"]);
+            std::filesystem::create_directories(tempPathString);
+
+            tempPathString.append("/");
+            tempPathString.append(weaponJson["ExportWeapons"][i]["name"]);
+            tempPathString.append(".json");
+
+            std::ofstream tempFileStream(tempPathString);
+            if (tempFileStream.is_open())
+            {
+                tempFileStream << weaponJson["ExportWeapons"][i];
+                tempFileStream.close();
+            }
         }
     }
     std::cout << "weaponJson successfully atomized." << std::endl;
@@ -345,7 +354,7 @@ int main()
     //Read Warframe Json
     std::cout << "warframeJson ..." << std::endl;
     Json warframeJson;
-    std::ifstream warframeJsonstream("json/warframeJson.json");
+    std::ifstream warframeJsonstream("./data/json/warframeJson.json");
     if (warframeJsonstream.is_open())
     {
         warframeJsonstream >> warframeJson;
@@ -357,31 +366,30 @@ int main()
     }
     for (int i = 0; i < warframeJson["ExportWarframes"].size(); i++)
     {
-        std::string tempPathString = "json/warframes/";
-        tempPathString.append(warframeJson["ExportWarframes"][i]["productCategory"]);
-        std::filesystem::create_directories(tempPathString);
-
-        tempPathString.append("/");
-        tempPathString.append(clean_string_symbols(warframeJson["ExportWarframes"][i]["name"]));
-        tempPathString.append(".json");
-
-
-        std::ofstream tempFileStream(tempPathString);
-        std::cout << tempPathString << std::endl;
-        if (tempFileStream.is_open())
+        if (!warframeJson["ExportWarframes"][i]["productCategory"].empty())
         {
-            tempFileStream << warframeJson["ExportWarframes"][i];
-            tempFileStream.close();
+            std::string tempPathString = "./data/json/warframes/";
+            tempPathString.append(warframeJson["ExportWarframes"][i]["productCategory"]);
+            std::filesystem::create_directories(tempPathString);
+
+            tempPathString.append("/");
+            tempPathString.append(clean_string_symbols(warframeJson["ExportWarframes"][i]["name"]));
+            tempPathString.append(".json");
+
+            std::ofstream tempFileStream(tempPathString);
+            if (tempFileStream.is_open())
+            {
+                tempFileStream << warframeJson["ExportWarframes"][i];
+                tempFileStream.close();
+            }
         }
     }
     std::cout << "warframeJson successfully atomized." << std::endl;
 
-
-
     //Read Upgrade Json
     std::cout << "upgradeJson ..." << std::endl;
     Json upgradeJson;
-    std::ifstream upgradeJsonstream("json/upgradeJson.json");
+    std::ifstream upgradeJsonstream("./data/json/upgradeJson.json");
     if (upgradeJsonstream.is_open())
     {
         upgradeJsonstream >> upgradeJson;
@@ -393,13 +401,9 @@ int main()
     }
     for (int i = 0; i < upgradeJson["ExportUpgrades"].size(); i++)
     {
-        std::string tempPathString = "json/upgrades/";
-        if (upgradeJson["ExportUpgrades"][i]["type"].empty())
+        if (!upgradeJson["ExportUpgrades"][i]["type"].empty())
         {
-            //nop
-        }
-        else
-        {
+            std::string tempPathString = "./data/json/upgrades/";
             tempPathString.append(upgradeJson["ExportUpgrades"][i]["type"]);
             std::filesystem::create_directories(tempPathString);
 
@@ -408,7 +412,6 @@ int main()
             tempPathString.append(".json");
 
             std::ofstream tempFileStream(tempPathString);
-            std::cout << tempPathString << std::endl;
             if (tempFileStream.is_open())
             {
                 tempFileStream << upgradeJson["ExportUpgrades"][i];
@@ -419,19 +422,18 @@ int main()
     std::cout << "upgradeJson successfully atomized." << std::endl;
 
 
+    //---------------------------------------------------------------------------
 
+    Json BriefRespiteJson;
+    std::ifstream BriefRespiteStream("./data/json/upgrades/AURA/Brief Respite.json");
+    if (BriefRespiteStream.is_open())
+    {
+        BriefRespiteJson << BriefRespiteStream;
+        BriefRespiteStream.close();
+    }
+    AuraMod BriefRespite(BriefRespiteJson);
 
-
-    
-
-    //todo
-    //ne pas faire les spawn de directory + file si il existe deja
-    //delete les file ZLMA + masterWeaponJson quand try fini
-    //comment
-
-
-
-
+    std::cout << BriefRespite.name << std::endl;
 
 
 
