@@ -80,11 +80,27 @@ public:
 
 //--------------------------------------------------------------------------------------------------------------------
 
-std::string clean_string(std::string str)
+std::string clean_string_symbols(std::string str)
 {
     std::string c_str = str;
-    c_str.erase(0, 1);
-    c_str.erase(c_str.size() - 1);
+    
+    while (c_str.find("\r") != std::string::npos)
+    {
+        c_str.replace(c_str.find("\r"), 2, "");
+    }
+    while (c_str.find("\"") != std::string::npos)
+    {
+        c_str.replace(c_str.find("\""), 1, "");
+    }
+    while (c_str.find("<") != std::string::npos)
+    {
+        c_str.replace(c_str.find("<"), 1, "");
+    }
+    while (c_str.find(">") != std::string::npos)
+    {
+        c_str.replace(c_str.find(">"), 1, "");
+    }
+
     return c_str;
 }
 
@@ -213,20 +229,47 @@ int main()
     std::cout << "Start of GET requests (content.warframe.com/PublicExport/Manifest)" << std::endl;
     std::string Base_URL = "https://content.warframe.com/PublicExport/Manifest/";
     //Load Weapons Json
-    std::cout << "Weapon JSON: " << std::endl;
+    std::cout << "Get weapon JSON. " << std::endl;
     cpr::Response weaponResponse = cpr::Get(cpr::Url{ Base_URL+Weapon_Index });
-    std::cout << "Status code: " << weaponResponse.status_code << '\n';
-    std::ofstream weaponJSONstream("json/weaponJson.json", std::ios::out );
-    std::string cleanResponse = weaponResponse.text;
-    //Cleaning Json
-    while (cleanResponse.find("\r") != std::string::npos)
+    std::cout << "weaponResponse status code: " << weaponResponse.status_code << '\n';
+    std::cout << "Get warframe JSON. " << std::endl;
+    cpr::Response warframeResponse = cpr::Get(cpr::Url{ Base_URL + Warframe_Index });
+    std::cout << "warframeResponse status code: " << warframeResponse.status_code << '\n';
+    std::cout << "Get upgrade JSON. " << std::endl;
+    cpr::Response upgradeResponse = cpr::Get(cpr::Url{ Base_URL + Upgrade_Index });
+    std::cout << "upgradeResponse status code: " << upgradeResponse.status_code << '\n';
+
+    
+    //Cleaning Response
+    std::cout << "Start cleaning responses." << std::endl;
+    std::cout << "weaponResponse ..." << std::endl;
+    std::string cleanWeaponResponse = weaponResponse.text;
+    while (cleanWeaponResponse.find("\r") != std::string::npos)
     {
-        cleanResponse.replace(cleanResponse.find("\r"), 2, "");
+        cleanWeaponResponse.replace(cleanWeaponResponse.find("\r"), 2, "");
     }
-    //Save Json
+    std::cout << "warframeResponse ..." << std::endl;
+    std::string cleanWarframeResponse = warframeResponse.text;
+    while (cleanWarframeResponse.find("\r") != std::string::npos)
+    {
+        cleanWarframeResponse.replace(cleanWarframeResponse.find("\r"), 2, "");
+    }
+    std::cout << "upgradeResponse ..." << std::endl;
+    std::string cleanUpgradeResponse = upgradeResponse.text;
+    while (cleanUpgradeResponse.find("\r") != std::string::npos)
+    {
+        cleanUpgradeResponse.replace(cleanUpgradeResponse.find("\r"), 2, "");
+    }
+    std::cout << "Responses clean." << std::endl;
+
+
+    //Save Response to JSON files
+    std::cout << "Save responses to JSON files" << std::endl;
+    std::cout << "Saving weaponResponse ..." << std::endl;
+    std::ofstream weaponJSONstream("json/weaponJson.json", std::ios::out );
     if (weaponJSONstream.is_open())
     {
-        weaponJSONstream << cleanResponse;
+        weaponJSONstream << cleanWeaponResponse;
         weaponJSONstream.close();
     }
     else
@@ -234,19 +277,49 @@ int main()
         std::cout << "Unable to open weaponJSON" << std::endl;
         return 1;
     }
+    std::cout << "Saving warframeResponse ..." << std::endl;
+    std::ofstream warframeJSONstream("json/warframeJson.json", std::ios::out);
+    if (warframeJSONstream.is_open())
+    {
+        warframeJSONstream << cleanWarframeResponse;
+        warframeJSONstream.close();
+    }
+    else
+    {
+        std::cout << "Unable to open warframeJSON" << std::endl;
+        return 1;
+    }
+    std::cout << "Saving upgradeResponse ..." << std::endl;
+    std::ofstream upgradeJSONstream("json/upgradeJson.json", std::ios::out);
+    if (upgradeJSONstream.is_open())
+    {
+        upgradeJSONstream << cleanUpgradeResponse;
+        upgradeJSONstream.close();
+    }
+    else
+    {
+        std::cout << "Unable to open upgradeJSON" << std::endl;
+        return 1;
+    }
+    std::cout << "Successfully saved." << std::endl;
 
-    
 
-    Json weaponJson;
+
+    //Read 3 Interesting Json (Weapon/Warframe/Upgrade)
+    std::cout << "Start Jsons atomization & sorting ..." << std::endl;
     //Read Weapon Json
+    std::cout << "weaponJson ..." << std::endl;
+    Json weaponJson;
     std::ifstream weaponJsonstream("json/weaponJson.json");
     if (weaponJsonstream.is_open())
     {
         weaponJsonstream >> weaponJson;
         weaponJsonstream.close();
     }
-    
-
+    else
+    {
+        std::cout << "Failed to load weaponJson." << std::endl;
+    }
     //Save Each weapon data in a Json file sorted in their respectiv folder;
     for (int i = 0; i < weaponJson["ExportWeapons"].size(); i++)
     {
@@ -267,7 +340,89 @@ int main()
             tempFileStream.close();
         }
     }
+    std::cout << "weaponJson successfully atomized." << std::endl;
 
+    //Read Warframe Json
+    std::cout << "warframeJson ..." << std::endl;
+    Json warframeJson;
+    std::ifstream warframeJsonstream("json/warframeJson.json");
+    if (warframeJsonstream.is_open())
+    {
+        warframeJsonstream >> warframeJson;
+        warframeJsonstream.close();
+    }
+    else
+    {
+        std::cout << "Failed to load warframeJson." << std::endl;
+    }
+    for (int i = 0; i < warframeJson["ExportWarframes"].size(); i++)
+    {
+        std::string tempPathString = "json/warframes/";
+        tempPathString.append(warframeJson["ExportWarframes"][i]["productCategory"]);
+        std::filesystem::create_directories(tempPathString);
+
+        tempPathString.append("/");
+        tempPathString.append(clean_string_symbols(warframeJson["ExportWarframes"][i]["name"]));
+        tempPathString.append(".json");
+
+
+        std::ofstream tempFileStream(tempPathString);
+        std::cout << tempPathString << std::endl;
+        if (tempFileStream.is_open())
+        {
+            tempFileStream << warframeJson["ExportWarframes"][i];
+            tempFileStream.close();
+        }
+    }
+    std::cout << "warframeJson successfully atomized." << std::endl;
+
+
+
+    //Read Upgrade Json
+    std::cout << "upgradeJson ..." << std::endl;
+    Json upgradeJson;
+    std::ifstream upgradeJsonstream("json/upgradeJson.json");
+    if (upgradeJsonstream.is_open())
+    {
+        upgradeJsonstream >> upgradeJson;
+        upgradeJsonstream.close();
+    }
+    else
+    {
+        std::cout << "Failed to load upgradeJson." << std::endl;
+    }
+    for (int i = 0; i < upgradeJson["ExportUpgrades"].size(); i++)
+    {
+        std::string tempPathString = "json/upgrades/";
+        if (upgradeJson["ExportUpgrades"][i]["type"].empty())
+        {
+            //nop
+        }
+        else
+        {
+            tempPathString.append(upgradeJson["ExportUpgrades"][i]["type"]);
+            std::filesystem::create_directories(tempPathString);
+
+            tempPathString.append("/");
+            tempPathString.append(clean_string_symbols(upgradeJson["ExportUpgrades"][i]["name"]));
+            tempPathString.append(".json");
+
+            std::ofstream tempFileStream(tempPathString);
+            std::cout << tempPathString << std::endl;
+            if (tempFileStream.is_open())
+            {
+                tempFileStream << upgradeJson["ExportUpgrades"][i];
+                tempFileStream.close();
+            }
+        }
+    }
+    std::cout << "upgradeJson successfully atomized." << std::endl;
+
+
+
+
+
+    
 
     //todo
     //ne pas faire les spawn de directory + file si il existe deja
