@@ -19,67 +19,13 @@
 
 #include "Mod.hpp"
 #include "WeaponAttribute.hpp"
-
+#include "Warframe.hpp"
 using Json = nlohmann::json;
 
 
 
 //--------------------------------------------------------------------------------------------------------------------
 
-class PistolWeaponAttribute {
-public:
-    std::string name;
-    std::string uniqueName;
-    bool codexSecret;
-    std::vector<float> damagePerShot;
-    int totalDamage;
-    std::string description;
-    float criticalChance;
-    float criticalMultiplier;
-    float procChance;
-    float fireRate;
-    int masteryReq;
-    std::string productCategory;
-    int slot;
-    float accuracy;
-    float omegaAttenuation;
-    std::string noise;
-    std::string trigger;
-    int magasineSize;
-    float reloadTime;
-    float multishot;
-};
-
-class MeleeWeaponAttribute {
-public:
-    std::string name;
-    std::string uniqueName;
-    bool codexSecret;
-    std::vector<float> damagePerShot;
-    int totalDamage;
-    std::string description;
-    float criticalChance;
-    float criticalMultiplier;
-    float procChance;
-    float fireRate;
-    int masteryReq;
-    std::string productCategory;
-    int slot;
-    float omegaAttenuation;
-    float blockingAngle;
-    float comboDuration;
-    float followThrough;
-    float range;
-    float slamAttack;
-    float slamRadialDamage;
-    float slamRadius;
-    float slideAttack;
-    float heavyAttackDamage;
-    float heavySlamAttack;
-    float heavySlamRadialDamage;
-    float heavySlamRadius;
-    float windUp;
-};
 
 
 
@@ -434,9 +380,7 @@ int main()
     }
     AuraMod BriefRespite(BriefRespiteJson);
 
-    std::cout << BriefRespite.name << std::endl;
-
-
+    BriefRespite.debugDisplayData();
 
 
 	return 0;

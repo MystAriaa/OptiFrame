@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <json.hpp>
+#include <iostream>
 #include "Ability.hpp"
 
 class Warframe {
@@ -23,7 +24,7 @@ public:
     std::string uniqueName;
 
     Warframe(nlohmann::json Json);
-    ~Warframe();
+    ~Warframe() {};
 
-
+    void debugDisplayData();
 };

@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <json.hpp>
+#include <iostream>
 
 class Mod {
 public:
@@ -13,6 +14,7 @@ public:
     int fusionLimit;
     std::string compatName;
     std::string type;
+    std::vector<std::string> description;
 
     Mod() {};
     ~Mod() {};
@@ -26,59 +28,68 @@ public:
         int t_baseDrain,
         int t_fusionLimit,
         std::string t_compatName,
-        std::string t_type);
+        std::string t_type,
+        std::vector<std::string> t_description);
+
+    void debugDisplayData();
 };
 
 class AuraMod : public Mod {
-    using Mod::Mod;
 public:
     std::vector<std::string> levelStats;
 
     AuraMod(nlohmann::json Json);
     ~AuraMod() {};
+
+    void debugDisplayData();
 };
 
 class WarframeMod : public Mod {
-    using Mod::Mod;
 public:
     std::vector<std::string> levelStats;
 
-    WarframeMod(nlohmann::json Json) {};
+    WarframeMod(nlohmann::json Json);
     ~WarframeMod() {};
+
+    void debugDisplayData();
 };
 
 class StanceMod : public Mod {
-    using Mod::Mod;
 public:
     std::string description;
 
-    StanceMod(nlohmann::json Json) {};
+    StanceMod(nlohmann::json Json);
     ~StanceMod() {};
+
+    void debugDisplayData();
 };
 
 class MeleeMod : public Mod {
-    using Mod::Mod;
 public:
     std::vector<std::string> levelStats;
 
-    MeleeMod(nlohmann::json Json) {};
+    MeleeMod(nlohmann::json Json);
     ~MeleeMod() {};
+
+    void debugDisplayData();
 };
 
 class PrimaryMod : public Mod {
-    using Mod::Mod;
 public:
     std::vector<std::string> levelStats;
 
-    PrimaryMod(nlohmann::json Json) {};
+    PrimaryMod(nlohmann::json Json);
     ~PrimaryMod() {};
+
+    void debugDisplayData();
 };
 
 class SecondaryMod : public Mod {
-    using Mod::Mod;
 public:
     std::vector<std::string> levelStats;
 
-    SecondaryMod(nlohmann::json Json) {};
+    SecondaryMod(nlohmann::json Json);
     ~SecondaryMod() {};
+
+    void debugDisplayData();
 };

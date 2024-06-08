@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <json.hpp>
+#include <iostream>
 
 class WeaponAttribute {
 public:
@@ -17,9 +18,10 @@ public:
     int masteryReq;
     std::string productCategory;
     int slot;
+    float omegaAttenuation;
 
-    WeaponAttribute();
-    ~WeaponAttribute();
+    WeaponAttribute() {};
+    ~WeaponAttribute() {};
 
     void loadData(std::string t_name,
         std::string t_uniqueName,
@@ -33,14 +35,15 @@ public:
         float t_fireRate,
         int t_masteryReq,
         std::string t_productCategory,
-        int t_slot);
+        int t_slot,
+        float t_omegaAttenuation);
+
+    void debugDisplayData();
 };
 
 class PrimaryWeaponAttribute : public WeaponAttribute {
-    using WeaponAttribute::WeaponAttribute;
 public:
     float accuracy;
-    float omegaAttenuation;
     std::string noise;
     std::string trigger;
     int magasineSize;
@@ -48,14 +51,14 @@ public:
     float multishot;
 
     PrimaryWeaponAttribute(nlohmann::json);
-    ~PrimaryWeaponAttribute();
+    ~PrimaryWeaponAttribute() {};
+
+    void debugDisplayData();
 };
 
 class SecondaryWeaponAttribute : public WeaponAttribute {
-    using WeaponAttribute::WeaponAttribute;
 public:
     float accuracy;
-    float omegaAttenuation;
     std::string noise;
     std::string trigger;
     int magasineSize;
@@ -63,13 +66,13 @@ public:
     float multishot;
 
     SecondaryWeaponAttribute(nlohmann::json);
-    ~SecondaryWeaponAttribute();
+    ~SecondaryWeaponAttribute() {};
+
+    void debugDisplayData();
 };
 
 class MeleeWeaponAttribute : public WeaponAttribute {
-    using WeaponAttribute::WeaponAttribute;
 public:
-    float omegaAttenuation;
     float blockingAngle;
     float comboDuration;
     float followThrough;
@@ -85,5 +88,7 @@ public:
     float windUp;
 
     MeleeWeaponAttribute(nlohmann::json);
-    ~MeleeWeaponAttribute();
+    ~MeleeWeaponAttribute() {};
+
+    void debugDisplayData();
 };

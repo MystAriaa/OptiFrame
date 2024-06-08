@@ -33,3 +33,37 @@ Warframe::Warframe(nlohmann::json Json)
     }
     abilities = tempVector2;
 }
+
+
+
+
+
+//--------------------------------------
+// Debug methodes
+
+void Warframe::debugDisplayData()
+{
+    std::cout << std::endl;
+    std::cout << "[Debug Display Data]" << std::endl;
+    std::cout << "uniqueName: " << uniqueName << std::endl;
+    std::cout << "name: " << name << std::endl;
+    std::cout << "armor: " << armor << std::endl;
+    std::cout << "codexSecret: " << codexSecret << std::endl;
+    std::cout << "description: " << description << std::endl;
+    std::cout << "health: " << health << std::endl;
+    std::cout << "masteryReq: " << masteryReq << std::endl;
+    std::cout << "parentName: " << parentName << std::endl;
+    std::cout << "passiveDescription: " << passiveDescription << std::endl;
+    std::cout << "power: " << power << std::endl;
+    std::cout << "productCategory: " << productCategory << std::endl;
+    std::cout << "shield: " << shield << std::endl;
+    std::cout << "sprintSpeed: " << sprintSpeed << std::endl;
+    std::cout << "stamina: " << stamina << std::endl;
+
+    std::cout << "abilities: " << std::endl;
+    for (int i = 0; i < abilities.size(); i++)
+    {
+        std::cout << "   n°" << i << std::endl;
+        abilities[i].debugDisplayData();
+    }
+}
