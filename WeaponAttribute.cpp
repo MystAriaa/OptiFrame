@@ -61,17 +61,17 @@ MeleeWeaponAttribute::MeleeWeaponAttribute(nlohmann::json Json)
     loadData(Json["uniqueName"], Json["name"], Json["codexSecret"], Json["damagePerShot"], Json["totalDamage"], Json["description"], Json["criticalChance"],
         Json["criticalMultiplier"], Json["procChance"], Json["fireRate"], Json["masteryReq"], Json["productCategory"], Json["slot"]);
     omegaAttenuation = Json["omegaAttenuation"];
-    float blockingAngle = Json["blockingAngle"];
-    float comboDuration = Json["comboDuration"];
-    float followThrough = Json["followThrough"];
-    float range = Json["range"];
-    float slamAttack = Json["slamAttack"];
-    float slamRadialDamage = Json["slamRadialDamage"];
-    float slamRadius = Json["slamRadius"];
-    float slideAttack = Json["slideAttack"];
-    float heavyAttackDamage = Json["heavyAttackDamage"];
-    float heavySlamAttack = Json["heavySlamAttack"];
-    float heavySlamRadialDamage = Json["heavySlamRadialDamage"];
-    float heavySlamRadius = Json["heavySlamRadius"];
-    float windUp = Json["windUp"];
+    blockingAngle = Json["blockingAngle"];
+    comboDuration = Json["comboDuration"];
+    followThrough = Json["followThrough"];
+    range = Json["range"];
+    slamAttack = Json["slamAttack"];
+    slamRadialDamage = Json["slamRadialDamage"];
+    slamRadius = Json["slamRadius"];
+    slideAttack = Json["slideAttack"];
+    heavyAttackDamage = Json["heavyAttackDamage"];
+    heavySlamAttack = Json["heavySlamAttack"];
+    heavySlamRadialDamage = Json["heavySlamRadialDamage"];
+    heavySlamRadius = Json["heavySlamRadius"];
+    windUp = Json["windUp"];
 }
