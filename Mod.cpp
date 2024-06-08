@@ -1,5 +1,4 @@
-#include "Mod.h"
-#include "iostream"
+#include "Mod.hpp"
 
 void Mod::loadData(
     std::string t_uniqueName,

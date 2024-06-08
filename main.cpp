@@ -17,7 +17,8 @@
 #include <json.hpp>
 #include "pocketlzma.hpp"
 
-#include "Mod.h"
+#include "Mod.hpp"
+#include "WeaponAttribute.hpp"
 
 using Json = nlohmann::json;
 
