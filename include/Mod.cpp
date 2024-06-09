@@ -18,7 +18,6 @@ Mod::Mod()
     levelStats = {};
     modSet = "";
 }
-
 Mod::Mod(nlohmann::json Json)
 {
     try

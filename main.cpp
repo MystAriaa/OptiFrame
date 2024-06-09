@@ -240,12 +240,13 @@ int main()
 
 
     //Save Response to JSON files
+    int indent = 4;
     std::cout << "Save responses to JSON files" << std::endl;
     std::cout << "Saving weaponResponse ..." << std::endl;
     std::ofstream weaponJSONstream("./data/json/weaponJson.json", std::ios::out );
     if (weaponJSONstream.is_open())
     {
-        weaponJSONstream << cleanWeaponResponse;
+        weaponJSONstream << std::setw(4) << Json::parse(cleanWeaponResponse) << std::endl;
         weaponJSONstream.close();
     }
     else
@@ -257,7 +258,7 @@ int main()
     std::ofstream warframeJSONstream("./data/json/warframeJson.json", std::ios::out);
     if (warframeJSONstream.is_open())
     {
-        warframeJSONstream << cleanWarframeResponse;
+        warframeJSONstream << std::setw(4) << Json::parse(cleanWarframeResponse) << std::endl;
         warframeJSONstream.close();
     }
     else
@@ -269,7 +270,7 @@ int main()
     std::ofstream upgradeJSONstream("./data/json/upgradeJson.json", std::ios::out);
     if (upgradeJSONstream.is_open())
     {
-        upgradeJSONstream << cleanUpgradeResponse;
+        upgradeJSONstream << std::setw(4) << Json::parse(cleanUpgradeResponse) << std::endl;
         upgradeJSONstream.close();
     }
     else
@@ -312,7 +313,7 @@ int main()
             std::ofstream tempFileStream(tempPathString);
             if (tempFileStream.is_open())
             {
-                tempFileStream << weaponJson["ExportWeapons"][i];
+                tempFileStream << std::setw(4) << weaponJson["ExportWeapons"][i];
                 tempFileStream.close();
             }
         }
@@ -347,7 +348,7 @@ int main()
             std::ofstream tempFileStream(tempPathString);
             if (tempFileStream.is_open())
             {
-                tempFileStream << warframeJson["ExportWarframes"][i];
+                tempFileStream << std::setw(4) << warframeJson["ExportWarframes"][i];
                 tempFileStream.close();
             }
         }
@@ -382,7 +383,7 @@ int main()
             std::ofstream tempFileStream(tempPathString);
             if (tempFileStream.is_open())
             {
-                tempFileStream << upgradeJson["ExportUpgrades"][i];
+                tempFileStream << std::setw(4) << upgradeJson["ExportUpgrades"][i];
                 tempFileStream.close();
             }
         }
@@ -392,35 +393,39 @@ int main()
 
     //---------------------------------------------------------------------------
 
-    //Test Mods
-    Mod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
-    BriefRespite.debugDisplayData();
-    Mod CathodeCurrent(loadJsonFromFile("./data/json/upgrades/WARFRAME/Cathode Current.json"));
-    CathodeCurrent.debugDisplayData();
-    Mod BorealContempt(loadJsonFromFile("./data/json/upgrades/MELEE/Boreal's Contempt.json"));
-    BorealContempt.debugDisplayData();
-    Mod FailedCallMod(loadJsonFromFile(""));
-    FailedCallMod.debugDisplayData();
+    if (false)
+    {
+        //Test Mods
+        Mod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
+        BriefRespite.debugDisplayData();
+        Mod CathodeCurrent(loadJsonFromFile("./data/json/upgrades/WARFRAME/Cathode Current.json"));
+        CathodeCurrent.debugDisplayData();
+        Mod BorealContempt(loadJsonFromFile("./data/json/upgrades/MELEE/Boreal's Contempt.json"));
+        BorealContempt.debugDisplayData();
+        Mod FailedCallMod(loadJsonFromFile(""));
+        FailedCallMod.debugDisplayData();
 
-    //Test Suits
-    Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
-    IvaraPrime.debugDisplayData();
-    Suit Itzal(loadJsonFromFile("./data/json/warframes/SpaceSuits/ARCHWING Itzal.json"));
-    Itzal.debugDisplayData();
-    Suit Voidrig(loadJsonFromFile("./data/json/warframes/MechSuits/Voidrig.json"));
-    Voidrig.debugDisplayData();
-    Suit FailedCallSuit("");
-    FailedCallSuit.debugDisplayData();
+        //Test Suits
+        Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
+        IvaraPrime.debugDisplayData();
+        Suit Itzal(loadJsonFromFile("./data/json/warframes/SpaceSuits/ARCHWING Itzal.json"));
+        Itzal.debugDisplayData();
+        Suit Voidrig(loadJsonFromFile("./data/json/warframes/MechSuits/Voidrig.json"));
+        Voidrig.debugDisplayData();
+        Suit FailedCallSuit("");
+        FailedCallSuit.debugDisplayData();
 
-    //Test Weapons
-    GunWeaponAttribute Torid(loadJsonFromFile("./data/json/weapons/LongGuns/Torid.json"));
-    Torid.debugDisplayData();
-    GunWeaponAttribute KuvaBrakk(loadJsonFromFile("./data/json/weapons/Pistols/Kuva Brakk.json"));
-    KuvaBrakk.debugDisplayData();
-    MeleeWeaponAttribute Anku(loadJsonFromFile("./data/json/weapons/Melee/Anku.json"));
-    Anku.debugDisplayData();
-    GunWeaponAttribute FailedCallWeapon("");
-    FailedCallWeapon.debugDisplayData();
+        //Test Weapons
+        GunWeaponAttribute Torid(loadJsonFromFile("./data/json/weapons/LongGuns/Torid.json"));
+        Torid.debugDisplayData();
+        GunWeaponAttribute KuvaBrakk(loadJsonFromFile("./data/json/weapons/Pistols/Kuva Brakk.json"));
+        KuvaBrakk.debugDisplayData();
+        MeleeWeaponAttribute Anku(loadJsonFromFile("./data/json/weapons/Melee/Anku.json"));
+        Anku.debugDisplayData();
+        GunWeaponAttribute FailedCallWeapon("");
+        FailedCallWeapon.debugDisplayData();
+    }
+    
 
 
 
