@@ -2,7 +2,6 @@
 
 Warframe::Warframe(nlohmann::json Json)
 {
-    std::vector<Ability> abilities;
     armor = Json["armor"];
     codexSecret = Json["codexSecret"];
     description = Json["description"];
@@ -65,5 +64,12 @@ void Warframe::debugDisplayData()
     {
         std::cout << "   n°" << i << std::endl;
         abilities[i].debugDisplayData();
+    }
+
+    std::cout << "exalted: " << std::endl;
+    for (int i = 0; i < exalted.size(); i++)
+    {
+        std::cout << "   n°" << i << std::endl;
+        std::cout << "   " << exalted[i] << std::endl;
     }
 }

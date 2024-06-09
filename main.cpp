@@ -15,11 +15,13 @@
 #include <sciplot/sciplot.hpp>
 #include <cpr/cpr.h>
 #include <json.hpp>
-#include "pocketlzma.hpp"
+#include <pocketlzma.hpp>
 
-#include "Mod.hpp"
-#include "WeaponAttribute.hpp"
-#include "Warframe.hpp"
+#include <Mod.hpp>
+#include <WeaponAttribute.hpp>
+#include <Warframe.hpp>
+
+
 using Json = nlohmann::json;
 
 
@@ -55,6 +57,25 @@ std::string clean_string_symbols(std::string str)
     return c_str;
 }
 
+
+Json loadJsonFromFile(std::string path)
+{
+    Json dataJson;
+    std::ifstream dataStream(path);
+    if (dataStream.is_open())
+    {
+        std::cout << "Loading " << path << std::endl;
+        dataJson << dataStream;
+        dataStream.close();
+        std::cout << "Loaded " << path << std::endl;
+        return dataJson;
+    }
+    else
+    {
+        std::cout << "Unable to open " << path << std::endl;
+        return 1;
+    }
+}
 
 
 
@@ -371,16 +392,22 @@ int main()
 
     //---------------------------------------------------------------------------
 
-    Json BriefRespiteJson;
-    std::ifstream BriefRespiteStream("./data/json/upgrades/AURA/Brief Respite.json");
-    if (BriefRespiteStream.is_open())
-    {
-        BriefRespiteJson << BriefRespiteStream;
-        BriefRespiteStream.close();
-    }
-    AuraMod BriefRespite(BriefRespiteJson);
 
+    AuraMod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
     BriefRespite.debugDisplayData();
+
+    Warframe IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
+    IvaraPrime.debugDisplayData();
+
+    GunWeaponAttribute Torid(loadJsonFromFile("./data/json/weapons/LongGuns/Torid.json"));
+    Torid.debugDisplayData();
+
+    GunWeaponAttribute KuvaBrakk(loadJsonFromFile("./data/json/weapons/Pistols/Kuva Brakk.json"));
+    KuvaBrakk.debugDisplayData();
+
+    MeleeWeaponAttribute Anku(loadJsonFromFile("./data/json/weapons/Melee/Anku.json"));
+    Anku.debugDisplayData();
+
 
 
 	return 0;
