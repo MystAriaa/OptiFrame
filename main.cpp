@@ -405,6 +405,9 @@ int main()
     GunWeaponAttribute KuvaBrakk(loadJsonFromFile("./data/json/weapons/Pistols/Kuva Brakk.json"));
     KuvaBrakk.debugDisplayData();
 
+    GunWeaponAttribute FailedCall("");
+    FailedCall.debugDisplayData();
+
     MeleeWeaponAttribute Anku(loadJsonFromFile("./data/json/weapons/Melee/Anku.json"));
     Anku.debugDisplayData();
 

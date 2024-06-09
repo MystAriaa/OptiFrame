@@ -41,6 +41,7 @@ public:
     bool sentinel;
     int multishot;
 
+    GunWeaponAttribute();
     GunWeaponAttribute(nlohmann::json Json);
     ~GunWeaponAttribute() {};
 
@@ -79,6 +80,7 @@ public:
     float heavySlamRadius;
     float windUp;
 
+    MeleeWeaponAttribute();
     MeleeWeaponAttribute(nlohmann::json Json);
     ~MeleeWeaponAttribute() {};
 
