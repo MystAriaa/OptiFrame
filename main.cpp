@@ -57,6 +57,27 @@ std::string clean_string_symbols(std::string str)
     return c_str;
 }
 
+//std::vector<std::string> pop_front(std::vector<std::string> vec)
+//{
+//    vec.erase(vec.begin());
+//    return vec;
+//}
+
+std::vector<std::string> split(std::string s, std::string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    std::string token;
+    std::vector<std::string> res;
+
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        token = s.substr(pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back(token);
+    }
+
+    res.push_back(s.substr(pos_start));
+    return res;
+}
+
 
 Json loadJsonFromFile(std::string path)
 {
@@ -388,7 +409,38 @@ int main()
             }
         }
     }
+    for (int i = 0; i < upgradeJson["ExportModSet"].size(); i++)
+    {
+        std::string tempPathString = "./data/json/upgrades/modSets/";
+        std::filesystem::create_directories(tempPathString);
+        tempPathString.append("/");
+        std::vector<std::string> ff = split(upgradeJson["ExportModSet"][i]["uniqueName"],"/");
+        tempPathString.append(ff[ff.size() - 1]);
+        tempPathString.append(".json");
+
+        std::ofstream tempFileStream(tempPathString);
+        if (tempFileStream.is_open())
+        {
+            tempFileStream << std::setw(4) << upgradeJson["ExportModSet"][i];
+            tempFileStream.close();
+        }
+    }
     std::cout << "upgradeJson successfully atomized." << std::endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //---------------------------------------------------------------------------
