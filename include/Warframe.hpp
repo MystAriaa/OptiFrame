@@ -3,6 +3,7 @@
 #include <json.hpp>
 #include <iostream>
 #include "Ability.hpp"
+#include "usefullFunction.hpp"
 
 class Suit {
 public:

@@ -2,6 +2,7 @@
 #include <vector>
 #include <json.hpp>
 #include <iostream>
+#include "usefullFunction.hpp"
 
 class Ability {
 public:

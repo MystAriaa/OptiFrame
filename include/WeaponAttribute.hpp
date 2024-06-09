@@ -3,6 +3,7 @@
 #include <json.hpp>
 #include <iostream>
 #include <unordered_map>
+#include "usefullFunction.hpp"
 
 class DamagePerShotTable {
 public:

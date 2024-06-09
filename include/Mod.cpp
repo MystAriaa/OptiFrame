@@ -149,7 +149,6 @@ SetMod::SetMod(nlohmann::json Json)
         numUpgradesInSet = 0;
         stats = {};
     }
-    
 }
 
 
@@ -182,7 +181,7 @@ void Mod::debugDisplayData()
     for (int i = 0; i < description.size(); i++)
     {
         std::cout << "   n°" << i << std::endl;
-        std::cout << "   " << description[i] << std::endl;
+        std::cout << "   " << cleanRetourChariot(description[i]) << std::endl;
     }
     std::cout << "subtype: " << subtype << std::endl;
     std::cout << "levelStats: " << std::endl;
@@ -191,7 +190,7 @@ void Mod::debugDisplayData()
         std::cout << "   n°" << std::endl;
         for (auto& b : a)
         {
-            std::cout << "      -" << b << std::endl;
+            std::cout << "      -" << cleanRetourChariot(b) << std::endl;
         }
     }
     std::cout << "modSet: " << modSet << std::endl;
@@ -207,6 +206,6 @@ void SetMod::debugDisplayData()
     std::cout << "stats: " << std::endl;
     for (auto& a : stats)
     {
-        std::cout << "   -" << a << std::endl;
+        std::cout << "   -" << cleanRetourChariot(a) << std::endl;
     }
 }

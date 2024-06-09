@@ -20,7 +20,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-add_executable(OptiFrame main.cpp include/json.hpp include/pocketlzma.hpp include/pocketlzma_program.cpp include/Mod.hpp include/Mod.cpp include/Warframe.hpp include/Warframe.cpp include/WeaponAttribute.hpp include/WeaponAttribute.cpp include/Ability.hpp include/Ability.cpp)
+add_executable(OptiFrame main.cpp include/usefullFunction.hpp include/usefullFunction.cpp include/json.hpp include/pocketlzma.hpp include/pocketlzma_program.cpp include/Mod.hpp include/Mod.cpp include/Warframe.hpp include/Warframe.cpp include/WeaponAttribute.hpp include/WeaponAttribute.cpp include/Ability.hpp include/Ability.cpp include/Arcane.hpp include/Arcane.cpp "include/usefullFunction.cpp")
 
 if(WIN32) # Install dlls in the same directory as the executable on Windows
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

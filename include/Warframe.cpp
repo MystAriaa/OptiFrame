@@ -113,6 +113,6 @@ void Suit::debugDisplayData()
     for (int i = 0; i < exalted.size(); i++)
     {
         std::cout << "   n°" << i << std::endl;
-        std::cout << "   " << exalted[i] << std::endl;
+        std::cout << "   " << cleanRetourChariot(exalted[i]) << std::endl;
     }
 }

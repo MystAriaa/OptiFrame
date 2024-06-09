@@ -17,5 +17,5 @@ void Ability::debugDisplayData()
 {
 	std::cout << "   abilityName: " << abilityName << std::endl;
 	std::cout << "   abilityUniqueName: " << abilityUniqueName << std::endl;
-	std::cout << "   description: " << description << std::endl;
+	std::cout << "   description: " << cleanRetourChariot(description) << std::endl;
 }

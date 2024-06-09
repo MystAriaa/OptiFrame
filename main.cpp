@@ -17,67 +17,23 @@
 #include <json.hpp>
 #include <pocketlzma.hpp>
 
+#include <usefullFunction.hpp>
 #include <Mod.hpp>
 #include <WeaponAttribute.hpp>
 #include <Warframe.hpp>
+#include <Arcane.hpp>
 
 
 using Json = nlohmann::json;
 
 
 
+
+
+
+
+
 //--------------------------------------------------------------------------------------------------------------------
-
-
-
-
-//--------------------------------------------------------------------------------------------------------------------
-
-std::string clean_string_symbols(std::string str)
-{
-    std::string c_str = str;
-    
-    while (c_str.find("\r") != std::string::npos)
-    {
-        c_str.replace(c_str.find("\r"), 2, "");
-    }
-    while (c_str.find("\"") != std::string::npos)
-    {
-        c_str.replace(c_str.find("\""), 1, "");
-    }
-    while (c_str.find("<") != std::string::npos)
-    {
-        c_str.replace(c_str.find("<"), 1, "");
-    }
-    while (c_str.find(">") != std::string::npos)
-    {
-        c_str.replace(c_str.find(">"), 1, "");
-    }
-
-    return c_str;
-}
-
-//std::vector<std::string> pop_front(std::vector<std::string> vec)
-//{
-//    vec.erase(vec.begin());
-//    return vec;
-//}
-
-std::vector<std::string> split(std::string s, std::string delimiter) {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
-
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = s.substr(pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back(token);
-    }
-
-    res.push_back(s.substr(pos_start));
-    return res;
-}
-
 
 Json loadJsonFromFile(std::string path)
 {
@@ -100,6 +56,15 @@ Json loadJsonFromFile(std::string path)
 
 
 
+
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------
 
 
 int main()
@@ -176,7 +141,7 @@ int main()
 
     //Load Indexes Value
     std::cout << "Loading indexes ..." << std::endl;
-    std::string Weapon_Index, Warframe_Index, Upgrade_Index;
+    std::string Weapon_Index, Warframe_Index, Upgrade_Index, RelicArcane_Index;
     std::string line;
     std::ifstream indexLzmaDecompressed("./data/lzma/indexLzmaDecompressed.txt", std::ios::in);
     if (indexLzmaDecompressed.is_open())
@@ -199,6 +164,10 @@ int main()
             {
                 Upgrade_Index = lineF;
             }
+            if (lineF.find("ExportRelicArcane") != std::string::npos)
+            {
+                RelicArcane_Index = lineF;
+            }
         }
     }
     else
@@ -207,11 +176,12 @@ int main()
         return 1;
     }
 
-    if (!Weapon_Index.empty() && !Warframe_Index.empty() && !Upgrade_Index.empty())
+    if (!Weapon_Index.empty() && !Warframe_Index.empty() && !Upgrade_Index.empty() && !RelicArcane_Index.empty())
     {
         std::cout << "Weapon_Index: " << Weapon_Index << std::endl;
         std::cout << "Warframe_Index: " << Warframe_Index << std::endl;
         std::cout << "Upgrade_Index: " << Upgrade_Index << std::endl;
+        std::cout << "RelicArcane_Index: " << RelicArcane_Index << std::endl;
     }
     else
     {
@@ -235,6 +205,9 @@ int main()
     std::cout << "Get upgrade JSON. " << std::endl;
     cpr::Response upgradeResponse = cpr::Get(cpr::Url{ Base_URL + Upgrade_Index });
     std::cout << "upgradeResponse status code: " << upgradeResponse.status_code << '\n';
+    std::cout << "Get relicArcane JSON. " << std::endl;
+    cpr::Response relicArcaneResponse = cpr::Get(cpr::Url{ Base_URL + RelicArcane_Index });
+    std::cout << "relicArcaneResponse status code: " << relicArcaneResponse.status_code << '\n';
 
     
     //Cleaning Response
@@ -256,6 +229,12 @@ int main()
     while (cleanUpgradeResponse.find("\r") != std::string::npos)
     {
         cleanUpgradeResponse.replace(cleanUpgradeResponse.find("\r"), 2, "");
+    }
+    std::cout << "relicArcaneResponse ..." << std::endl;
+    std::string cleanRelicArcaneResponse = relicArcaneResponse.text;
+    while (cleanRelicArcaneResponse.find("\r") != std::string::npos)
+    {
+        cleanRelicArcaneResponse.replace(cleanRelicArcaneResponse.find("\r"), 2, "");
     }
     std::cout << "Responses clean." << std::endl;
 
@@ -299,11 +278,22 @@ int main()
         std::cout << "Unable to open upgradeJSON" << std::endl;
         return 1;
     }
+    std::cout << "Saving relicArcaneResponse ..." << std::endl;
+    std::ofstream relicArcaneJSONstream("./data/json/relicArcaneJson.json", std::ios::out);
+    if (relicArcaneJSONstream.is_open())
+    {
+        relicArcaneJSONstream << std::setw(4) << Json::parse(cleanRelicArcaneResponse) << std::endl;
+        relicArcaneJSONstream.close();
+    }
+    else
+    {
+        std::cout << "Unable to open relicArcaneJSON" << std::endl;
+        return 1;
+    }
     std::cout << "Successfully saved." << std::endl;
 
 
-
-    //Read 3 Interesting Json (Weapon/Warframe/Upgrade)
+    //Read 4 Interesting Json (Weapon/Warframe/Upgrade/RelicArcane)
     std::cout << "Start Jsons atomization & sorting ..." << std::endl;
     //Read Weapon Json
     std::cout << "weaponJson ..." << std::endl;
@@ -328,7 +318,7 @@ int main()
             std::filesystem::create_directories(tempPathString);
 
             tempPathString.append("/");
-            tempPathString.append(weaponJson["ExportWeapons"][i]["name"]);
+            tempPathString.append(clean_string_symbols(weaponJson["ExportWeapons"][i]["name"]));
             tempPathString.append(".json");
 
             std::ofstream tempFileStream(tempPathString);
@@ -425,16 +415,39 @@ int main()
             tempFileStream.close();
         }
     }
+    
+    //Read RelicArcane Json
+    std::cout << "relicArcaneJson ..." << std::endl;
+    Json relicArcaneJson;
+    std::ifstream relicArcaneJsonstream("./data/json/relicArcaneJson.json");
+    if (relicArcaneJsonstream.is_open())
+    {
+        relicArcaneJsonstream >> relicArcaneJson;
+        relicArcaneJsonstream.close();
+    }
+    else
+    {
+        std::cout << "Failed to load relicArcaneJson." << std::endl;
+    }
+    for (int i = 0; i < relicArcaneJson["ExportRelicArcane"].size(); i++)
+    {
+        if (!relicArcaneJson["ExportRelicArcane"][i].contains("relicRewards") && relicArcaneJson["ExportRelicArcane"][i].contains("levelStats"))
+        {
+            std::string tempPathString = "./data/json/arcanes/";
+            std::filesystem::create_directories(tempPathString);
+
+            tempPathString.append(clean_string_symbols(relicArcaneJson["ExportRelicArcane"][i]["name"]));
+            tempPathString.append(".json");
+
+            std::ofstream tempFileStream(tempPathString);
+            if (tempFileStream.is_open())
+            {
+                tempFileStream << std::setw(4) << relicArcaneJson["ExportRelicArcane"][i];
+                tempFileStream.close();
+            }
+        }
+    }
     std::cout << "upgradeJson successfully atomized." << std::endl;
-
-
-
-
-
-
-
-
-
 
 
 
@@ -461,8 +474,8 @@ int main()
         Vigilante.debugDisplayData();
 
         //Test Suits
-        Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
-        IvaraPrime.debugDisplayData();
+        Suit WispPrime(loadJsonFromFile("./data/json/warframes/Suits/Wisp Prime.json"));
+        WispPrime.debugDisplayData();
         Suit Itzal(loadJsonFromFile("./data/json/warframes/SpaceSuits/ARCHWING Itzal.json"));
         Itzal.debugDisplayData();
         Suit Voidrig(loadJsonFromFile("./data/json/warframes/MechSuits/Voidrig.json"));
@@ -479,6 +492,10 @@ int main()
         Anku.debugDisplayData();
         GunWeaponAttribute FailedCallWeapon("");
         FailedCallWeapon.debugDisplayData();
+
+        //Test Arcane
+        Arcane Energize(loadJsonFromFile("./data/json/arcanes/Arcane Energize.json"));
+        Energize.debugDisplayData();
 
     }
     
