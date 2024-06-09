@@ -1,89 +1,128 @@
 #include "Mod.hpp"
 
-void Mod::loadData(
-    std::string t_uniqueName,
-    std::string t_name,
-    std::string t_polarity,
-    std::string t_rarity,
-    bool t_codexSecret,
-    int t_baseDrain,
-    int t_fusionLimit,
-    std::string t_compatName,
-    std::string t_type,
-    std::vector<std::string> t_description)
+Mod::Mod()
 {
-    uniqueName = t_uniqueName;
-    name = t_name;
-    polarity = t_polarity;
-    rarity = t_rarity;
-    codexSecret = t_codexSecret;
-    baseDrain = t_baseDrain;
-    fusionLimit = t_fusionLimit;
-    compatName = t_compatName;
-    type = t_type;
-    description = t_description;
+    uniqueName = "";
+    name = "";
+    polarity = "";
+    rarity = "";
+    codexSecret = false;
+    baseDrain = 0;
+    fusionLimit = 0;
+    excludeFromCodex = false;
+    isUtility = false;
+    compatName = "";
+    type = "";
+    description = {};
+    subtype = "";
+    levelStats = {};
+    modSet = "";
 }
 
-AuraMod::AuraMod(nlohmann::json Json)
+Mod::Mod(nlohmann::json Json)
 {
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-    std::vector<std::string> tempVector = {};
-    for (int i = 0; i < Json["levelStats"].size(); i++)
+    try
     {
-        tempVector.push_back(Json["levelStats"][i]["stats"][0]);
+        uniqueName = Json["uniqueName"];
+        name = Json["name"];
+        polarity = Json["polarity"];
+        rarity = Json["rarity"];
+        codexSecret = Json["codexSecret"];
+        baseDrain = Json["baseDrain"];
+        fusionLimit = Json["fusionLimit"];
+        if (Json.contains("excludeFromCodex")) { excludeFromCodex = Json["excludeFromCodex"]; } else { excludeFromCodex = false; }
+        if (Json.contains("isUtility")) { isUtility = Json["isUtility"]; } else { isUtility = false; }
+        compatName = Json["compatName"];
+        type = Json["type"];
+        if (Json.contains("subtype")) { subtype = Json["subtype"]; } else { subtype = ""; }
+        description = {};
+        for (int i = 0; i < Json["description"].size(); i++)
+        {
+            description.push_back(Json["description"][i]);
+        }
+        levelStats = {};
+        for (int i = 0; i < Json["levelStats"].size(); i++)
+        {
+            std::vector<std::string> tempVector = {};
+            for (auto& obj : Json["levelStats"][i]["stats"])
+            {
+                tempVector.push_back(obj);
+            }
+            levelStats.push_back(tempVector);
+        }
+        if (Json.contains("modSet")) { modSet = Json["modSet"]; } else { modSet = ""; }
     }
-    levelStats = tempVector;
-}
-
-WarframeMod::WarframeMod(nlohmann::json Json)
-{
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-    std::vector<std::string> tempVector = {};
-    for (int i = 0; i < Json["levelStats"].size(); i++)
+    catch (...)
     {
-        tempVector.push_back(Json["levelStats"][i]["stats"][0]);
+        uniqueName = "";
+        name = "";
+        polarity = "";
+        rarity = "";
+        codexSecret = false;
+        baseDrain = 0;
+        fusionLimit = 0;
+        excludeFromCodex = false;
+        isUtility = false;
+        compatName = "";
+        type = "";
+        description = {};
+        subtype = "";
+        levelStats = {};
+        modSet = "";
+        std::cout << "Error initializing Mod object, default object initialized instead." << std::endl;
     }
-    levelStats = tempVector;
 }
 
-StanceMod::StanceMod(nlohmann::json Json)
-{
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-}
 
-MeleeMod::MeleeMod(nlohmann::json Json)
+RivenMod::RivenMod()
 {
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-    std::vector<std::string> tempVector = {};
-    for (int i = 0; i < Json["levelStats"].size(); i++)
+    uniqueName = "";
+    name = "";
+    polarity = "";
+    rarity = "";
+    codexSecret = false;
+    baseDrain = 0;
+    fusionLimit = 0;
+    excludeFromCodex = false;
+    upgradeEntries = "";
+    availableChallenges = "";
+    levelStats = {};
+}
+RivenMod::RivenMod(nlohmann::json Json)
+{
+    try
     {
-        tempVector.push_back(Json["levelStats"][i]["stats"][0]);
+        uniqueName = Json["uniqueName"];
+        name = Json["name"];
+        polarity = Json["polarity"];
+        rarity = Json["rarity"];
+        codexSecret = Json["codexSecret"];
+        baseDrain = Json["baseDrain"];
+        fusionLimit = Json["fusionLimit"];
+        excludeFromCodex = Json["excludeFromCodex"];
+        if (Json.contains("upgradeEntries")) { upgradeEntries = Json["upgradeEntries"]; } else { upgradeEntries = ""; }
+        if (Json.contains("availableChallenges")) { availableChallenges = Json["availableChallenges"]; } else { availableChallenges = ""; }
+        levelStats = {};
+        for (auto& a : Json["levelStats"])
+        {
+            levelStats.push_back(a);
+        }
     }
-    levelStats = tempVector;
-}
-
-PrimaryMod::PrimaryMod(nlohmann::json Json)
-{
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-    std::vector<std::string> tempVector = {};
-    for (int i = 0; i < Json["levelStats"].size(); i++)
+    catch (...)
     {
-        tempVector.push_back(Json["levelStats"][i]["stats"][0]);
+        uniqueName = "";
+        name = "";
+        polarity = "";
+        rarity = "";
+        codexSecret = false;
+        baseDrain = 0;
+        fusionLimit = 0;
+        excludeFromCodex = false;
+        upgradeEntries = "";
+        availableChallenges = "";
+        levelStats = {};
     }
-    levelStats = tempVector;
 }
-
-SecondaryMod::SecondaryMod(nlohmann::json Json)
-{
-    loadData(Json["uniqueName"], Json["name"], Json["polarity"], Json["rarity"], Json["codexSecret"], Json["baseDrain"], Json["fusionLimit"], Json["compatName"], Json["type"], Json["description"]);
-    std::vector<std::string> tempVector = {};
-    for (int i = 0; i < Json["levelStats"].size(); i++)
-    {
-        tempVector.push_back(Json["levelStats"][i]["stats"][0]);
-    }
-    levelStats = tempVector;
-}
-
 
 
 
@@ -105,73 +144,25 @@ void Mod::debugDisplayData()
     std::cout << "codexSecret: " << codexSecret << std::endl;
     std::cout << "baseDrain: " << baseDrain << std::endl;
     std::cout << "fusionLimit: " << fusionLimit << std::endl;
+    std::cout << "excludeFromCodex: " << excludeFromCodex << std::endl;
+    std::cout << "isUtility: " << isUtility << std::endl;
     std::cout << "compatName: " << compatName << std::endl;
     std::cout << "type: " << type << std::endl;
-
     std::cout << "description: " << std::endl;
     for (int i = 0; i < description.size(); i++)
     {
         std::cout << "   n°" << i << std::endl;
         std::cout << "   " << description[i] << std::endl;
     }
-}
-
-void AuraMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
+    std::cout << "subtype: " << subtype << std::endl;
     std::cout << "levelStats: " << std::endl;
-    for (int i = 0; i < levelStats.size(); i++)
+    for (auto& a : levelStats)
     {
-        std::cout << "   " << levelStats[i] << std::endl;
+        std::cout << "   n°" << std::endl;
+        for (auto& b : a)
+        {
+            std::cout << "      -" << b << std::endl;
+        }
     }
-    std::cout << std::endl;
-}
-
-void WarframeMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
-    std::cout << "levelStats: " << std::endl;
-    for (int i = 0; i < levelStats.size(); i++)
-    {
-        std::cout << "   " << levelStats[i] << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void StanceMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
-}
-
-void MeleeMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
-    std::cout << "levelStats: " << std::endl;
-    for (int i = 0; i < levelStats.size(); i++)
-    {
-        std::cout << "   " << levelStats[i] << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void PrimaryMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
-    std::cout << "levelStats: " << std::endl;
-    for (int i = 0; i < levelStats.size(); i++)
-    {
-        std::cout << "   " << levelStats[i] << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void SecondaryMod::debugDisplayData()
-{
-    Mod::debugDisplayData();
-    std::cout << "levelStats: " << std::endl;
-    for (int i = 0; i < levelStats.size(); i++)
-    {
-        std::cout << "   " << levelStats[i] << std::endl;
-    }
-    std::cout << std::endl;
+    std::cout << "modSet: " << modSet << std::endl;
 }

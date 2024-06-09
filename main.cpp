@@ -392,9 +392,15 @@ int main()
 
     //---------------------------------------------------------------------------
 
-
-    AuraMod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
+    //Test Mods
+    Mod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
     BriefRespite.debugDisplayData();
+    Mod CathodeCurrent(loadJsonFromFile("./data/json/upgrades/WARFRAME/Cathode Current.json"));
+    CathodeCurrent.debugDisplayData();
+    Mod BorealContempt(loadJsonFromFile("./data/json/upgrades/MELEE/Boreal's Contempt.json"));
+    BorealContempt.debugDisplayData();
+    Mod FailedCallMod(loadJsonFromFile(""));
+    FailedCallMod.debugDisplayData();
 
     //Test Suits
     Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));

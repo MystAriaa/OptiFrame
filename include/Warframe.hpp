@@ -6,22 +6,22 @@
 
 class Suit {
 public:
-    std::vector<Ability> abilities;
-    int armor;
-    bool codexSecret;
-    std::string description;
-    std::vector<std::string> exalted;
-    int health;
-    int masteryReq;
+    std::string uniqueName;
     std::string name;
     std::string parentName;
-    std::string passiveDescription;
-    int power;
-    std::string productCategory;
+    std::string description;
+    int health;
     int shield;
-    float sprintSpeed;
+    int armor;
     int stamina;
-    std::string uniqueName;
+    int power;
+    bool codexSecret;
+    int masteryReq;
+    float sprintSpeed;
+    std::string passiveDescription;
+    std::vector<std::string> exalted;
+    std::vector<Ability> abilities;
+    std::string productCategory;
 
     Suit();
     Suit(nlohmann::json Json);
