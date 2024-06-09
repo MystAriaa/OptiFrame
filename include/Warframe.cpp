@@ -1,36 +1,79 @@
 #include "Warframe.hpp"
 
-Warframe::Warframe(nlohmann::json Json)
+Suit::Suit()
 {
-    armor = Json["armor"];
-    codexSecret = Json["codexSecret"];
-    description = Json["description"];
-    health = Json["health"];
-    masteryReq = Json["masteryReq"];
-    name = Json["name"];
-    parentName = Json["parentName"];
-    passiveDescription = Json["passiveDescription"];
-    power = Json["power"];
-    productCategory = Json["productCategory"];
-    shield = Json["shield"];
-    sprintSpeed = Json["sprintSpeed"];
-    stamina = Json["stamina"];
-    uniqueName = Json["uniqueName"];
-
-    std::vector<std::string> tempVector1 = {};
-    for (int i = 0; i < Json["exalted"].size(); i++)
+    armor = 0;
+    codexSecret = 0;
+    description = "";
+    health = 0;
+    masteryReq = 0;
+    name = "blankSuitName";
+    parentName = "";
+    passiveDescription = "";
+    power = 0;
+    productCategory = "";
+    shield = 0;
+    sprintSpeed = 0;
+    stamina = 0;
+    uniqueName = "blankSuitUniqueName";
+    exalted = {};
+    abilities = {};
+}
+Suit::Suit(nlohmann::json Json)
+{
+    try
     {
-        tempVector1.push_back(Json["exalted"][i]);
-    }
-    exalted = tempVector1;
+        armor = Json["armor"];
+        codexSecret = Json["codexSecret"];
+        description = Json["description"];
+        health = Json["health"];
+        masteryReq = Json["masteryReq"];
+        name = Json["name"];
+        parentName = Json["parentName"];
+        if (Json.contains("passiveDescription")) { passiveDescription = Json["passiveDescription"]; } else { passiveDescription = ""; }
+        power = Json["power"];
+        productCategory = Json["productCategory"];
+        shield = Json["shield"];
+        sprintSpeed = Json["sprintSpeed"];
+        stamina = Json["stamina"];
+        uniqueName = Json["uniqueName"];
 
-    std::vector<Ability> tempVector2 = {};
-    for (int i = 0; i < Json["abilities"].size(); i++)
-    {
-        Ability tempAbility(Json["abilities"][i]["abilityName"], Json["abilities"][i]["abilityUniqueName"], Json["abilities"][i]["description"]);
-        tempVector2.push_back(tempAbility);
+        exalted = {};
+        if (Json.contains("exalted"))
+        {
+            for (int i = 0; i < Json["exalted"].size(); i++)
+            {
+                exalted.push_back(Json["exalted"][i]);
+            }
+        }
+
+        abilities = {};
+        for (int i = 0; i < Json["abilities"].size(); i++)
+        {
+            Ability tempAbility(Json["abilities"][i]["abilityName"], Json["abilities"][i]["abilityUniqueName"], Json["abilities"][i]["description"]);
+            abilities.push_back(tempAbility);
+        }
     }
-    abilities = tempVector2;
+    catch (...)
+    {
+        armor = 0;
+        codexSecret = 0;
+        description = "";
+        health = 0;
+        masteryReq = 0;
+        name = "blankSuitName";
+        parentName = "";
+        passiveDescription = "";
+        power = 0;
+        productCategory = "";
+        shield = 0;
+        sprintSpeed = 0;
+        stamina = 0;
+        uniqueName = "blankSuitUniqueName";
+        exalted = {};
+        abilities = {};
+        std::cout << "Error initializing Suit object, default object initialized instead." << std::endl;
+    }
 }
 
 
@@ -40,7 +83,7 @@ Warframe::Warframe(nlohmann::json Json)
 //--------------------------------------
 // Debug methodes
 
-void Warframe::debugDisplayData()
+void Suit::debugDisplayData()
 {
     std::cout << std::endl;
     std::cout << "[Debug Display Data]" << std::endl;

@@ -396,20 +396,25 @@ int main()
     AuraMod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
     BriefRespite.debugDisplayData();
 
-    Warframe IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
+    //Test Suits
+    Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
     IvaraPrime.debugDisplayData();
+    Suit Itzal(loadJsonFromFile("./data/json/warframes/SpaceSuits/ARCHWING Itzal.json"));
+    Itzal.debugDisplayData();
+    Suit Voidrig(loadJsonFromFile("./data/json/warframes/MechSuits/Voidrig.json"));
+    Voidrig.debugDisplayData();
+    Suit FailedCallSuit("");
+    FailedCallSuit.debugDisplayData();
 
+    //Test Weapons
     GunWeaponAttribute Torid(loadJsonFromFile("./data/json/weapons/LongGuns/Torid.json"));
     Torid.debugDisplayData();
-
     GunWeaponAttribute KuvaBrakk(loadJsonFromFile("./data/json/weapons/Pistols/Kuva Brakk.json"));
     KuvaBrakk.debugDisplayData();
-
-    GunWeaponAttribute FailedCall("");
-    FailedCall.debugDisplayData();
-
     MeleeWeaponAttribute Anku(loadJsonFromFile("./data/json/weapons/Melee/Anku.json"));
     Anku.debugDisplayData();
+    GunWeaponAttribute FailedCallWeapon("");
+    FailedCallWeapon.debugDisplayData();
 
 
 

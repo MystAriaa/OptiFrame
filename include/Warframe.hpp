@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Ability.hpp"
 
-class Warframe {
+class Suit {
 public:
     std::vector<Ability> abilities;
     int armor;
@@ -23,8 +23,9 @@ public:
     int stamina;
     std::string uniqueName;
 
-    Warframe(nlohmann::json Json);
-    ~Warframe() {};
+    Suit();
+    Suit(nlohmann::json Json);
+    ~Suit() {};
 
     void debugDisplayData();
 };
