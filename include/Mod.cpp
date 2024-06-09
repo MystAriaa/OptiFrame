@@ -1,5 +1,42 @@
 #include "Mod.hpp"
 
+
+EffectMod::EffectMod()
+{
+    effectJson["weapon"]["utility"] = { "accuracy", "maxAmmo", "ammoPickup", "noiseLevel", "magazineSize", "spread", "projectileSpeed", "comboChance", "comboDuration", "initalCombo", "comboEfficiency", "blockingAngle", "numberBounce" };
+    effectJson["weapon"]["damage"]["physics"] = { "impact", "puncture", "slash" };
+    effectJson["weapon"]["damage"]["elemental"] = { "heat", "cold", "electricity", "toxin", "blast", "radiation", "gas", "magnetic", "viral", "corrosive" };
+    effectJson["weapon"]["damage"]["faction"] = { "greener", "corpus", "infested", "corrupted", "murmur", "sentientMultiplier" };
+    effectJson["weapon"]["damage"]["other"] = { "baseDamage", "fireRate", "reloadTime", "criticalChance", "criticalDamage", "statusChance", "statusDuration", "multishot", "punchThrough", "attackSpeed", "followThrough", "range", "finisherDamage", "groundSlamDamage" };
+    effectJson["warframe"]["stats"] = { "health", "armor", "shield", "shieldRechargeRate", "energy", "speed", "energyRegeneration" };
+    effectJson["warframe"]["abilityStats"] = { "range", "duration", "strengh", "efficiency", "castingSpeed" };
+    effectJson["warframe"]["utility"] = { "knockdownResistance", "knockdownRecoverySpeed", "aimGlideduration", "wallLatchDuration", "slide", "friction", "bulletJump", "enemyRadar" };
+    effectJson["warframe"]["damageResistance"] = { "flatDR", "tauDR", "impactDR", "punctureDR", "slashDR", "heatDR", "coldDR", "electricityDR", "toxinDR", "blastDR", "radiationDR", "gasDR", "magneticDR", "viralDR", "corrosiveDR" };
+
+
+    //horizontalisation
+    for (int i = 0; i < effectJson["weapon"]["utiliy"].size(); i++)
+    {
+        effectTable.insert({ effectJson["weapon"]["utiliy"][i], 0 });
+    }
+    for (auto& a : effectJson["weapon"]["damage"])
+    {
+        for (auto& b : a)
+        {
+            effectTable.insert({ b, 0 });
+        }
+    }
+    for (auto& a : effectJson["warframe"])
+    {
+        for (auto& b : a)
+        {
+            effectTable.insert({ b, 0 });
+        }
+    }
+}
+
+
+
 Mod::Mod()
 {
     uniqueName = "";
@@ -207,5 +244,16 @@ void SetMod::debugDisplayData()
     for (auto& a : stats)
     {
         std::cout << "   -" << cleanRetourChariot(a) << std::endl;
+    }
+}
+
+
+void EffectMod::debugDisplayData()
+{
+    std::cout << std::endl;
+    std::cout << "[Debug Display Data]" << std::endl;
+    for (auto& couple : effectTable)
+    {
+        std::cout << "   " << couple.first << ": " << couple.second << std::endl;
     }
 }

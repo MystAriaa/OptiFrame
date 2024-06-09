@@ -3,6 +3,20 @@
 #include <json.hpp>
 #include <iostream>
 #include "usefullFunction.hpp"
+#include <unordered_map>
+
+class EffectMod {
+public:
+    
+    nlohmann::json effectJson;
+    std::unordered_map<std::string, float> effectTable;
+
+    EffectMod();
+    ~EffectMod() {};
+
+    void debugDisplayData();
+};
+
 
 class Mod {
 public:

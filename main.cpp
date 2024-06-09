@@ -240,7 +240,6 @@ int main()
 
 
     //Save Response to JSON files
-    int indent = 4;
     std::cout << "Save responses to JSON files" << std::endl;
     std::cout << "Saving weaponResponse ..." << std::endl;
     std::ofstream weaponJSONstream("./data/json/weaponJson.json", std::ios::out );
@@ -458,7 +457,7 @@ int main()
 
     //---------------------------------------------------------------------------
 
-    if (true)
+    if (false)
     {
         //Test Mods
         Mod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
@@ -497,9 +496,12 @@ int main()
         Arcane Energize(loadJsonFromFile("./data/json/arcanes/Arcane Energize.json"));
         Energize.debugDisplayData();
 
+        //Test EffectMod
+        EffectMod defaultEffectMod;
+        defaultEffectMod.debugDisplayData();
     }
     
-
+    
 
 
 	return 0;
