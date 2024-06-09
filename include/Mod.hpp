@@ -48,3 +48,16 @@ public:
     RivenMod(nlohmann::json Json);
     ~RivenMod() {};
 };
+
+class SetMod {
+public:
+    std::string uniqueName;
+    int numUpgradesInSet;
+    std::vector<std::string> stats;
+
+    SetMod();
+    SetMod(nlohmann::json Json);
+    ~SetMod() {};
+
+    void debugDisplayData();
+};

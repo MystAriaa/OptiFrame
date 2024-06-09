@@ -445,7 +445,7 @@ int main()
 
     //---------------------------------------------------------------------------
 
-    if (false)
+    if (true)
     {
         //Test Mods
         Mod BriefRespite(loadJsonFromFile("./data/json/upgrades/AURA/Brief Respite.json"));
@@ -456,6 +456,9 @@ int main()
         BorealContempt.debugDisplayData();
         Mod FailedCallMod(loadJsonFromFile(""));
         FailedCallMod.debugDisplayData();
+        //Test SetMod
+        SetMod Vigilante(loadJsonFromFile("./data/json/upgrades/modSets/VigilanteSetMod.json"));
+        Vigilante.debugDisplayData();
 
         //Test Suits
         Suit IvaraPrime(loadJsonFromFile("./data/json/warframes/Suits/Ivara Prime.json"));
@@ -476,6 +479,7 @@ int main()
         Anku.debugDisplayData();
         GunWeaponAttribute FailedCallWeapon("");
         FailedCallWeapon.debugDisplayData();
+
     }
     
 

@@ -125,6 +125,37 @@ RivenMod::RivenMod(nlohmann::json Json)
 
 
 
+SetMod::SetMod()
+{
+    uniqueName = "";
+    numUpgradesInSet = 0;
+    stats = {};
+}
+SetMod::SetMod(nlohmann::json Json)
+{
+    try
+    {
+        uniqueName = Json["uniqueName"];
+        numUpgradesInSet = Json["numUpgradesInSet"];
+        stats = {};
+        for (int i = 0; i < Json["stats"].size() ; i++)
+        {
+            stats.push_back(Json["stats"][i]);
+        }
+    }
+    catch (...)
+    {
+        uniqueName = "";
+        numUpgradesInSet = 0;
+        stats = {};
+    }
+    
+}
+
+
+
+
+
 
 
 
@@ -164,4 +195,18 @@ void Mod::debugDisplayData()
         }
     }
     std::cout << "modSet: " << modSet << std::endl;
+}
+
+
+void SetMod::debugDisplayData()
+{
+    std::cout << std::endl;
+    std::cout << "[Debug Display Data]" << std::endl;
+    std::cout << "uniqueName: " << uniqueName << std::endl;
+    std::cout << "numUpgradesInSet: " << numUpgradesInSet << std::endl;
+    std::cout << "stats: " << std::endl;
+    for (auto& a : stats)
+    {
+        std::cout << "   -" << a << std::endl;
+    }
 }
